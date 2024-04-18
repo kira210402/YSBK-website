@@ -7,10 +7,10 @@ export const validateBody = (schema) => {
     if(validatorResult.error) {
       return res.status(400).json(validatorResult.error);
     } else {
-      if(!req.value) req.value = {};
-      if(!req.value['params']) req.value.params = {};
+      if(!req) req = {};
+      if(!req['params']) req.params = {};
 
-      req.value.body = validatorResult.value;
+      req.body = validatorResult.value;
       next();
     }
   }
