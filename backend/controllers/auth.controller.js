@@ -2,6 +2,7 @@ import { JWT_SECRET_KEY, JWT_SECRET_KEY_EXPIRE_TIME } from "../helpers/config-en
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
+// generate token
 const encodedToken = (userId) => {
   return jwt.sign(
     {
@@ -16,6 +17,7 @@ const encodedToken = (userId) => {
   )
 }
 
+// sign up
 export const signUp = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -43,8 +45,13 @@ export const signUp = async (req, res) => {
 
 };
 
+// sign in
 export const signIn = async (req, res) => {
+  const token = encodedToken(req.user._id);
 
+  res.setHeader("Authorization", token);
+
+  return res.status(200).json({ success: true });
 };
 
 export const secret = async (req, res, next) => {

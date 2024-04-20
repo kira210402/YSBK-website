@@ -6,7 +6,7 @@ import passport from "passport";
 import passportConfig from "../middlewares/passport.js";
 
 router.post("/sign-up", validateBody(schemas.signUpSchema), signUp);
-router.post("/sign-in", validateBody(schemas.signInSchema), signIn);
+router.post("/sign-in", validateBody(schemas.signInSchema), passport.authenticate("local", { session: false }), signIn);
 
 router.get("/secret", passport.authenticate("jwt", { session: false }), secret);
 
