@@ -45,4 +45,8 @@ export const signUp = async (req, res) => {
 
 export const signIn = async (req, res) => {
 
-}; 
+};
+
+export const secret = async (req, res, next) => {
+  return res.status(200).json({ resources: true });
+}
