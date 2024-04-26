@@ -54,6 +54,11 @@ export const signIn = async (req, res) => {
   return res.status(200).json({ success: true });
 };
 
+// sign in with google
+export const authGoogle = async( req, res, next) => {
+  console.log("auth with google success!");
+}
+
 export const secret = async (req, res, next) => {
   return res.status(200).json({ resources: true });
 }

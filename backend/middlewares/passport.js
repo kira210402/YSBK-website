@@ -2,11 +2,13 @@ import passport from "passport";
 import passportJwt from "passport-jwt";
 const JwtStrategy = passportJwt.Strategy;
 import { ExtractJwt } from "passport-jwt";
-import { JWT_SECRET_KEY } from "../helpers/config-env.js";
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET_KEY } from "../helpers/config-env.js";
 import User from "../models/user.model.js";
 import ppLocal from "passport-local";
 const LocalStrategy = ppLocal.Strategy;
+import GooglePlusTokenStrategy from "passport-google-plus-token";
 
+// passport jwt
 export default passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken("Authorization"),
   secretOrKey: JWT_SECRET_KEY
@@ -21,6 +23,20 @@ export default passport.use(new JwtStrategy({
     done(error, false);
   }
 }));
+
+// passport google
+export const passportGoogle = passport.use(new GooglePlusTokenStrategy({
+  clientID: GOOGLE_CLIENT_ID,
+  clientSecret: GOOGLE_CLIENT_SECRET
+}, async (accessToken, refreshToken, profile, done) => {
+  try {
+    console.log("accessToken", accessToken);
+    console.log("refreshToken", refreshToken);
+    console.log("profile", profile);
+  } catch (error) {
+    done(error, false);
+  }
+}))
 
 // passport local
 export const passportLocal = passport.use(new LocalStrategy({
@@ -39,4 +55,5 @@ export const passportLocal = passport.use(new LocalStrategy({
   } catch (error) {
     done(error, false);
   }
-}))
+}));
+
