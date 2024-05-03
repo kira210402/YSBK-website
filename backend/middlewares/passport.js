@@ -1,6 +1,6 @@
 import passport from "passport";
-import passportJwt from "passport-jwt";
-const JwtStrategy = passportJwt.Strategy;
+import passportJWT from "passport-jwt";
+const JwtStrategy = passportJWT.Strategy;
 import { ExtractJwt } from "passport-jwt";
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET_KEY } from "../helpers/config-env.js";
 import User from "../models/user.model.js";
@@ -9,7 +9,7 @@ const LocalStrategy = ppLocal.Strategy;
 import GooglePlusTokenStrategy from "passport-google-plus-token";
 
 // passport jwt
-export default passport.use(new JwtStrategy({
+export const passportJwt = passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken("Authorization"),
   secretOrKey: JWT_SECRET_KEY
 }, async (payload, done) => {
@@ -30,9 +30,20 @@ export const passportGoogle = passport.use(new GooglePlusTokenStrategy({
   clientSecret: GOOGLE_CLIENT_SECRET
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    console.log("accessToken", accessToken);
-    console.log("refreshToken", refreshToken);
-    console.log("profile", profile);
+    // check whether this current user exists in our databases
+    const existedUser = await User.findOne({ authGoogleId: profile.id, authType: "google"});
+
+    if(existedUser) return done(null, existedUser);
+
+    // if new account
+    const newUser = new User ({
+      authType: "google",
+      email: profile.emails[0].value,
+      authGoogleId: profile.id
+    });
+
+    await newUser.save();
+    done(null, newUser);
   } catch (error) {
     done(error, false);
   }
@@ -46,8 +57,8 @@ export const passportLocal = passport.use(new LocalStrategy({
     const user = await User.findOne({ email });
 
     if (!user) return done(null, false);
-
-    const validPassword = user.isValidPassword(password);
+    
+    const validPassword = await user.isValidPassword(password);
 
     if (!validPassword) return done(null, false);
 

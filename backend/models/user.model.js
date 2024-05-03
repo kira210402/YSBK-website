@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
     unique: true,
     minLength: 6
   },
@@ -17,13 +16,30 @@ const userSchema = new mongoose.Schema({
 
   password: {
     type: String,
-    required: true,
     minLength: 6
-  }
+  },
+
+  authType: {
+    type: String,
+    enum: ['local', 'google', 'facebook'],
+    default: 'local'
+  },
+
+  authGoogleId: {
+    type: String,
+    default: null,
+  },
+
+  authFacebookId: {
+    type: String,
+    default: null,
+  },
 });
 
 userSchema.pre("save", async function (next) {
   try {
+    if(this.authType !== "local") next();
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
@@ -32,7 +48,7 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-userSchema.methods.isValidPassword = async function(newPassword) {
+userSchema.methods.isValidPassword = async function (newPassword) {
   try {
     return await bcrypt.compare(newPassword, this.password);
   } catch (error) {
