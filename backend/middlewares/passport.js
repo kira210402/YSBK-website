@@ -31,12 +31,12 @@ export const passportGoogle = passport.use(new GooglePlusTokenStrategy({
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     // check whether this current user exists in our databases
-    const existedUser = await User.findOne({ authGoogleId: profile.id, authType: "google"});
+    const existedUser = await User.findOne({ authGoogleId: profile.id, authType: "google" });
 
-    if(existedUser) return done(null, existedUser);
+    if (existedUser) return done(null, existedUser);
 
     // if new account
-    const newUser = new User ({
+    const newUser = new User({
       authType: "google",
       email: profile.emails[0].value,
       authGoogleId: profile.id
@@ -47,7 +47,8 @@ export const passportGoogle = passport.use(new GooglePlusTokenStrategy({
   } catch (error) {
     done(error, false);
   }
-}))
+}));
+
 
 // passport local
 export const passportLocal = passport.use(new LocalStrategy({
@@ -57,7 +58,7 @@ export const passportLocal = passport.use(new LocalStrategy({
     const user = await User.findOne({ email });
 
     if (!user) return done(null, false);
-    
+
     const validPassword = await user.isValidPassword(password);
 
     if (!validPassword) return done(null, false);
