@@ -6,7 +6,8 @@ import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET_KEY } from "../helpe
 import User from "../models/user.model.js";
 import ppLocal from "passport-local";
 const LocalStrategy = ppLocal.Strategy;
-import GooglePlusTokenStrategy from "passport-google-plus-token";
+import GooglePassport from "passport-google-oauth20";
+const GoogleStrategy = GooglePassport.Strategy;
 
 // passport jwt
 export const passportJwt = passport.use(new JwtStrategy({
@@ -25,9 +26,11 @@ export const passportJwt = passport.use(new JwtStrategy({
 }));
 
 // passport google
-export const passportGoogle = passport.use(new GooglePlusTokenStrategy({
+export const passportGoogle = passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
-  clientSecret: GOOGLE_CLIENT_SECRET
+  clientSecret: GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost:8000/auth/google/callback",
+  scope: ["profile", "email"],
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     // check whether this current user exists in our databases
@@ -69,3 +72,10 @@ export const passportLocal = passport.use(new LocalStrategy({
   }
 }));
 
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+})

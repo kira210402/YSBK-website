@@ -7,7 +7,6 @@ export const NoMatch = () => {
       <h2>Nothing to see here!</h2>
       <p>
         <Link to="/">Go back to homepage</Link>
-        
       </p>
     </div>
   )
