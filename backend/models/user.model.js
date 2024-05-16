@@ -14,6 +14,13 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
 
+  mssv: {
+    type: String,
+    minLength: 8,
+    maxLength: 8,
+    required: true,
+  },
+
   password: {
     type: String,
     minLength: 6
@@ -29,6 +36,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+
+  role: [{
+    type: String,
+    enum: ["User", "Leader", "Mod"],
+    default: "User",
+  }],
 
   books: [{
     type: Schema.Types.ObjectId,

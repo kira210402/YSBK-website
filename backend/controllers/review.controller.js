@@ -1,6 +1,4 @@
-import mongoose from "mongoose";
 import Review from "../models/review.model.js";
-import Comment from "../models/comment.model.js";
 
 const upvote = async (req, res, next) => {
   const { reviewId } = req.params;
@@ -40,25 +38,8 @@ const downvote = async (req, res, next) => {
   }
 };
 
-const addComment = async (req, res, next) => {
-  const { reviewId } = req.params;
-  const { content } = req.body;
-  try {
-    const newComment = await Comment.create({
-      reviewId,
-      content
-    });
-    newComment = newComment.toJSON();
-
-    return res.status(201).json(newComment);
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-};
-
 export {
   upvote,
   downvote,
-  addComment,
 }
 

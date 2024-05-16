@@ -128,6 +128,23 @@ const addReview = async (req, res, next) => {
   }
 };
 
+const addComment = async (req, res, next) => {
+  const { userId, reviewId } = req.params;
+  const { content } = req.body;
+  try {
+    const newComment = await Comment.create({
+      userId,
+      reviewId,
+      content
+    });
+    newComment = newComment.toJSON();
+
+    return res.status(201).json(newComment);
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
 export {
   getAll,
   getOne,
@@ -136,5 +153,6 @@ export {
   deleteUser,
   addBook,
   addReview,
+  addComment,
 }
 
