@@ -24,6 +24,58 @@ const getOne = async (req, res, next) => {
   }
 };
 
+// search book by title, bookCode
+const getBookByTitle = async (req, res, next) => {
+  const { title } = req.params;
+  try {
+    const book = await Book.findOne({ title });
+
+    if (!book) return res.status(404).json({ message: BOOK_MESSAGE.NOT_FOUND });
+
+    return res.status(200).json(book);
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
+const getBookByBookCode = async (req, res, next) => {
+  const { bookCode } = req.params;
+  try {
+    const book = await Book.findOne({ bookCode });
+
+    if (!book) return res.status(404).json({ message: BOOK_MESSAGE.NOT_FOUND });
+
+    return res.status(200).json(book);
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
+
+// filter book by genre, status
+const getBooksByGenre = async (req, res, next) => {
+  const { genre } = req.params;
+  try {
+    const books = await Book.find({ genre });
+
+    return res.status(200).json(books);
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+}
+
+const getBooksByStatus = async (req, res, next) => {
+  const { status } = req.params;
+  try {
+    const books = await Book.find({ status });
+
+    return res.status(200).json(books);
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+}
+
+
 const create = async (req, res, next) => {
   try {
     const book = await Book.create(req.body);
@@ -64,6 +116,10 @@ const deleteBook = async (req, res, next) => {
 export {
   getAll,
   getOne,
+  getBookByTitle,
+  getBookByBookCode,
+  getBooksByGenre,
+  getBooksByStatus,
   create,
   update,
   deleteBook,

@@ -11,6 +11,22 @@ const activitySchema = new mongoose.Schema({
     required: true,
   },
 
+  content: {
+    type: String,
+    required: true,
+  },
+
+  image: {
+    type: String,
+    required: true,
+  },
+
+  status: {
+    type: String,
+    enum: ["EXPIRED", "ONGOING", "COMMING SOON"], 
+    required: true,
+  },
+
   startDate: {
     type: Date,
     required: true,

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const bookSchema = new mongoose.Schema({
   title: {
@@ -17,6 +17,11 @@ const bookSchema = new mongoose.Schema({
   },
 
   description: {
+    type: String,
+    required: true,
+  },
+
+  image: {
     type: String,
     required: true,
   },
@@ -41,14 +46,9 @@ const bookSchema = new mongoose.Schema({
     required: true,
   },
 
-  code: {
+  bookCode: {
     type: String,
     required: true,
-  },
-
-  comment: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Comment",
   },
 
   genre: {
@@ -60,8 +60,14 @@ const bookSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["AVAILABLE", "BORROWED"],
-    default: "AVAILABLE"
+    default: "AVAILABLE",
+    required: true,
   },
+
+  reviews: [{
+    type: Schema.Types.ObjectId,
+    ref: "Review"
+  }]
 });
 
 const Book = mongoose.model("Book", bookSchema);

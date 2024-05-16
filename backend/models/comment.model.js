@@ -1,9 +1,9 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const commentSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+  reviewId: {
+    type: Schema.Types.ObjectId,
+    ref: "Review",
     required: true,
   },
 

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
@@ -29,11 +29,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+
+  books: [{
+    type: Schema.Types.ObjectId,
+    ref: "Book"
+  }],
+
+  score: {
+    type: Number,
+    required: true,
+  }
 });
 
 userSchema.pre("save", async function (next) {
   try {
-    if(this.authType !== "local") next();
+    if (this.authType !== "local") next();
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
