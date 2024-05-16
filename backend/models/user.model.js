@@ -29,11 +29,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-
-  authFacebookId: {
-    type: String,
-    default: null,
-  },
 });
 
 userSchema.pre("save", async function (next) {

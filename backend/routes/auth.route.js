@@ -34,7 +34,7 @@ router.get("/logout", (req, res) => {
 })
 
 // login with google
-router.get("/google", passport.authenticate('google', { scope: ["profile", "email"] }), authGoogle);
+router.get("/google", passport.authenticate('google', { scope: ["profile", "email"] }));
 router.get("/google/callback", passport.authenticate("google", {
   successRedirect: CLIENT_URL,
   failureRedirect: "/login/failed",

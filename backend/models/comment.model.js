@@ -11,13 +11,7 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  createdAt: {
-    type: Date,
-    required: true,
-    default: Date.now(),
-  }
-});
+}, { timestamps: true });
 
 const Comment = mongoose.model("Comment", commentSchema);
 export default Comment;
