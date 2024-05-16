@@ -77,7 +77,27 @@ const returnBook = async(req, res, next) => {
   }
 };
 
+const updateBooksLoanAfterRegister = async (req, res) => {
+  const { mssv } = req.params;
+
+  try {
+    let user = await User.findOne({ mssv });
+
+    // Cập nhật thông tin sách đã mượn
+    const loans = await Loan.find({ mssv });
+    const bookIds = await Book.find({ bookCode: { $in: loans.map(loan => loan.bookCode) } }).select('_id');
+    user.books = bookIds.map(book => book._id);
+    await user.save();
+
+    res.status(201).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export {
   borrowBook,
   returnBook,
+  updateBooksLoanAfterRegister,
 }
