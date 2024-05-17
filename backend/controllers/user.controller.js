@@ -29,7 +29,6 @@ const getOne = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const user = await User.create(req.body);
-    user = user.toJSON();
 
     return res.status(201).json(user);
   } catch (error) {

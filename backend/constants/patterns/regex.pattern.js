@@ -1,3 +1,3 @@
 export const REGEX = {
-  BOOKCODE: "^(VN|NN|SK)\d{3}$",
+  BOOKCODE: "^(VN|NN|SK)\\d{3}$",
 }

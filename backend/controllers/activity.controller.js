@@ -28,7 +28,6 @@ const getOne = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const activity = await Activity.create(req.body);
-    activity = activity.toJSON();
 
     return res.status(201).json(activity);
   } catch (error) {

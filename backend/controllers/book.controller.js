@@ -77,10 +77,13 @@ const getBooksByStatus = async (req, res, next) => {
 
 
 const create = async (req, res, next) => {
+  const { bookCode } = req.body;
   try {
-    const book = await Book.create(req.body);
-    book = book.toJSON();
+    const foundBook = await Book.findOne({ bookCode });
 
+    if(foundBook) return res.status(400).json({message: "Book have already existed!"});
+
+    const book = await Book.create(req.body);
     return res.status(201).json(book);
   } catch (error) {
     return res.status(500).json({ error });
