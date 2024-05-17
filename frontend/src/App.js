@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Register } from "./pages/Register";
-import { Login } from "./pages/Login";
+import { Login } from "./pages/Login"; 
 import { HomePage } from "./pages/HomePage";
 import { Book } from "./pages/Book";
 import { LeaderBoard } from "./pages/LeaderBoard";
