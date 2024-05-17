@@ -1,11 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import { DEFAULT_IMAGE } from "../constants/index.js";
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: true,
-    minLength: 6
+    minLength: 6,
+    required: true,
   },
 
   email: {
@@ -24,12 +26,18 @@ const userSchema = new mongoose.Schema({
 
   password: {
     type: String,
-    minLength: 6
+    minLength: 6,
+    required: true,
+  },
+
+  avatar: {
+    type: String,
+    default: DEFAULT_IMAGE.DEFAULT_AVATAR,
   },
 
   authType: {
     type: String,
-    enum: ['local', 'google', 'facebook'],
+    enum: ['local', 'google'],
     default: 'local'
   },
 
@@ -38,11 +46,11 @@ const userSchema = new mongoose.Schema({
     default: null,
   },
 
-  role: [{
+  role: {
     type: String,
-    enum: ["User", "Leader", "Mod"],
+    enum: ["User", "Admin", "Moderator"],
     default: "User",
-  }],
+  },
 
   books: [{
     type: Schema.Types.ObjectId,
@@ -51,7 +59,7 @@ const userSchema = new mongoose.Schema({
 
   score: {
     type: Number,
-    required: true,
+    default: 0,
   }
 });
 

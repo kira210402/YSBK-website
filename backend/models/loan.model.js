@@ -4,7 +4,7 @@ const loanSchema = new mongoose.Schema({
   borrowDate: {
     type: Date,
     required: true,
-    default: Date.now
+    default: Date.now,
   },
   fullName: {
     type: String,
@@ -34,7 +34,6 @@ const loanSchema = new mongoose.Schema({
     type: String,
     enum: ["BORROWED", "RETURNED"],
     default: "BORROWED",
-    required: true,
   }
 }, { timestamps: true });
 

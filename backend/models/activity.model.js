@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { DEFAULT_IMAGE } from "../constants/index.js";
 
 const activitySchema = new mongoose.Schema({
   title: {
@@ -18,12 +19,12 @@ const activitySchema = new mongoose.Schema({
 
   image: {
     type: String,
-    required: true,
+    default: DEFAULT_IMAGE.DEFAULT_EVENT_IMAGE
   },
 
   status: {
     type: String,
-    enum: ["EXPIRED", "ONGOING", "COMMING SOON"], 
+    enum: ["PASSED", "ONGOING", "COMING SOON"], 
     required: true,
   },
 

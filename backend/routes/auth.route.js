@@ -7,8 +7,11 @@ import { CLIENT_URL } from "../helpers/config-env.js";
 import { passportGoogle, passportJwt, passportLocal } from "../middlewares/passport.js";
 
 router.post("/register", validateBody(schemas.signUpSchema), register);
-
 router.post("/login", validateBody(schemas.signInSchema), passport.authenticate("local"), login);
+router.post("/logout", (req, res) => {
+  req.logout();
+  res.redirect(CLIENT_URL);
+})
 
 router.get("/login/failed", (req, res) => {
   res.status(401).json({
@@ -27,10 +30,6 @@ router.get("login/success", (req, res) => {
   } else {
     res.status(403).json({ error: true, message: "Not authorized!" })
   }
-})
-router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect(CLIENT_URL);
 })
 
 // login with google

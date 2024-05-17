@@ -1,66 +1,60 @@
-import { JWT_SECRET_KEY, JWT_SECRET_KEY_EXPIRE_TIME } from "../helpers/config-env.js";
+import { encodedToken } from "../helpers/generateToken.js";
 import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
 
-// generate token
-const encodedToken = (userId) => {
-  return jwt.sign(
-    {
-      iss: "Duong Kim Nam",
-      sub: userId,
-      iat: new Date().getTime()
-    },
-    JWT_SECRET_KEY,
-    {
-      expiresIn: JWT_SECRET_KEY_EXPIRE_TIME
-    }
-  )
-}
 
 // register
 export const register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, mssv, password, role } = req.body;
 
   try {
-
-    const foundUser = await User.findOne({ $or: [{ username }, { email }] });
+    const foundUser = await User.findOne({ $or: [{ username }, { email }, { mssv }] });
 
     if (foundUser) return res.status(403).json({ error: { message: "User has been existed!" } });
 
-    const newUser = new User({
+    let user = await User.create({
       username,
       email,
-      password
+      mssv,
+      password,
+      role
     });
+    user = user.toJSON();
 
-    const user = await newUser.save();
-
-    const token = encodedToken(user._id);
+    const token = encodedToken(user._id, user.role);
     res.setHeader("Authorization", token);
 
-    return res.status(201).json({ success: true });
+    return res.status(201).json({token, user});
   } catch (error) {
-    return res.status(500).json(error);
+    console.log(error);
+    return res.status(500).json({error});
   }
 
 };
 
 // sign in
 export const login = async (req, res) => {
-  const token = encodedToken(req.user._id);
+  try {
+    const token = encodedToken(req.user._id, req.user.role);
 
-  res.setHeader("Authorization", token);
+    res.setHeader("Authorization", token);
 
-  return res.status(200).json({ success: true });
+    return res.status(200).json({ token });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
 
 // sign in with google
 export const authGoogle = async (req, res, next) => {
-  const token = encodedToken(req.user._id);
+  try {
+    const token = encodedToken(req.user._id, req.user.role);
 
-  res.setHeader("Authorization", token);
+    res.setHeader("Authorization", token);
 
-  return res.status(200).json({ success: true });
+    return res.status(200).json(token);
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 }
 
 export const secret = async (req, res, next) => {

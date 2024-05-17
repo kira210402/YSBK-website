@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { DEFAULT_IMAGE } from "../constants/index.js";
 
 const bookSchema = new mongoose.Schema({
   title: {
@@ -11,11 +12,6 @@ const bookSchema = new mongoose.Schema({
     required: true,
   },
 
-  authorDescription: {
-    type: String,
-    required: true,
-  },
-
   description: {
     type: String,
     required: true,
@@ -23,27 +19,11 @@ const bookSchema = new mongoose.Schema({
 
   image: {
     type: String,
-    required: true,
-  },
-
-  price: {
-    type: Number,
-    required: true,
-  },
-
-  publishDate: {
-    type: Date,
-    required: true,
-  },
-
-  publishingCompany: {
-    type: String,
-    required: true,
+    default: DEFAULT_IMAGE.DEFAULT_BOOK_IMAGE,
   },
 
   rating: {
     type: Number,
-    required: true,
   },
 
   bookCode: {
@@ -61,7 +41,6 @@ const bookSchema = new mongoose.Schema({
     type: String,
     enum: ["AVAILABLE", "BORROWED"],
     default: "AVAILABLE",
-    required: true,
   },
 
   reviews: [{

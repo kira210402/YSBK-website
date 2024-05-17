@@ -46,7 +46,7 @@ const borrowBook = async(req, res, next) => {
 };
 
 const returnBook = async(req, res, next) => {
-  const { bookCode } = req.body;
+  const { bookCode } = req.params;
 
   try {
     // Tìm loan và book

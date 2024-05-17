@@ -13,7 +13,7 @@ const route = (app) => {
   app.use("/activities", activityRouter);
   app.use("/other", otherRouter);
   app.use("/reviews", reviewRouter);
-  app.use("/loan", loanRouter);
+  app.use("/loans", loanRouter);
 }
 
 export default route;
