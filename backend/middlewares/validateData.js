@@ -34,27 +34,58 @@ export const schemas = {
     password: joi.string().min(6).required(),
   }),
 
+  userUpdateSchema: joi.object().keys({
+    username: joi.string().min(6),
+    email: joi.string().email(),
+    mssv: joi.string().min(8).max(8),
+    password: joi.string().min(6),
+    avatar: joi.string(),
+    role: joi.string().valid("User", "Admin", "Moderator"),
+  }),
+
   bookSchema: joi.object().keys({
     title: joi.string().required(),
     author: joi.string().required(),
     description: joi.string().required(),
     image: joi.string(),
     price: joi.number(),
-    rating: joi.number(),
+    rating: joi.number().valid(0, 1, 2, 3, 4, 5),
     bookCode: joi.string().min(5).max(5).pattern(new RegExp(REGEX.BOOKCODE)).required(),
     genre: joi.string().valid("VN", "NN", "SK").required(),
     status: joi.string().valid("AVAILABLE", "BORROWED"),
   }),
 
-  // recheck borrowDate either default or required
+  bookUpdateSchema: joi.object().keys({
+    title: joi.string(),
+    author: joi.string(),
+    description: joi.string(),
+    image: joi.string(),
+    price: joi.number(),
+    rating: joi.number().valid(0, 1, 2, 3, 4, 5),
+    bookCode: joi.string().min(5).max(5).pattern(new RegExp(REGEX.BOOKCODE)),
+    genre: joi.string().valid("VN", "NN", "SK"),
+    status: joi.string().valid("AVAILABLE", "BORROWED"),
+  }),
+
   loanSchema: joi.object().keys({
-    borrowDate: joi.date().format("YYYY-MM-DD").required(),
+    borrowDate: joi.date().format("YYYY-MM-DD"),
     fullName: joi.string().required(),
     mssv: joi.string().min(8).max(8).required(),
     phoneNumber: joi.string().min(10).max(10).required(),
-    bookTitle: joi.string().required(),
+    bookTitle: joi.string(),
     bookCode: joi.string().min(5).max(5).pattern(new RegExp(REGEX.BOOKCODE)).required(),
-    deposite: joi.number().required(),
+    deposit: joi.number().required(),
+    status: joi.string().valid("BORROWED", "RETURNED"),
+  }),
+
+  loanUpdateSchema: joi.object().keys({
+    borrowDate: joi.date().format("YYYY-MM-DD"),
+    fullName: joi.string(),
+    mssv: joi.string().min(8).max(8),
+    phoneNumber: joi.string().min(10).max(10),
+    bookTitle: joi.string(),
+    bookCode: joi.string().min(5).max(5).pattern(new RegExp(REGEX.BOOKCODE)),
+    deposit: joi.number(),
     status: joi.string().valid("BORROWED", "RETURNED"),
   }),
 
@@ -66,5 +97,15 @@ export const schemas = {
     status: joi.string().valid("PASSED", "ONGOING", "COMING SOON").required(),
     startDate: joi.date().format("YYYY-MM-DD").required(),
     endDate: joi.date().format("YYYY-MM-DD").required(),
+  }),
+
+  activityUpdateSchema: joi.object().keys({
+    title: joi.string().max(200),
+    description: joi.string(),
+    content: joi.string(),
+    image: joi.string(),
+    status: joi.string().valid("PASSED", "ONGOING", "COMING SOON"),
+    startDate: joi.date().format("YYYY-MM-DD"),
+    endDate: joi.date().format("YYYY-MM-DD"),
   })
 }

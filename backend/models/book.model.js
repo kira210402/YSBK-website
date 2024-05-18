@@ -22,9 +22,11 @@ const bookSchema = new mongoose.Schema({
     default: DEFAULT_IMAGE.DEFAULT_BOOK_IMAGE,
   },
 
-  rating: {
+  rating: [{
     type: Number,
-  },
+    enum: [0, 1, 2, 3, 4, 5],
+    default: 0,
+  }],
 
   bookCode: {
     type: String,

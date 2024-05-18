@@ -14,7 +14,6 @@ const verifyToken = async (req, res, next) => {
     );
 
     req.payload = payload;
-    console.log(payload);
     next();
   } catch (error) {
     return res.status(500).json(error);

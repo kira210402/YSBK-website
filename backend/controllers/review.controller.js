@@ -1,7 +1,9 @@
 import Review from "../models/review.model.js";
+import User from "../models/user.model.js";
 
 const upvote = async (req, res, next) => {
   const { reviewId } = req.params;
+
   try {
     const updatedReview = await Review.findByIdAndUpdate(
       reviewId,
@@ -12,6 +14,11 @@ const upvote = async (req, res, next) => {
     if (!updatedReview) {
       return res.status(404).json({ message: 'Review not found' });
     }
+
+    await User.findByIdAndUpdate(
+      updatedReview.userId,
+      { $inc: { score: 1 } }
+    );
 
     return res.status(200).json(updatedReview);
   } catch (error) {
@@ -32,14 +39,93 @@ const downvote = async (req, res, next) => {
       return res.status(404).json({ message: 'Review not found' });
     }
 
+    await User.findByIdAndUpdate(
+      updatedReview.userId,
+      { $inc: { score: -1 } }
+    );
+
     return res.status(200).json(updatedReview);
   } catch (error) {
     return res.status(500).json({ error });
   }
 };
 
+const update = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const review = await Review.findById(id);
+    if (!review) return res.status(404).json({ message: "Review not found" });
+
+    if (review.userId === req.payload.sub) {
+      const updatedReview = await Review.findByIdAndUpdate(id, req.body, { new: true });
+
+      return res.status(200).json(updatedReview);
+    } else return res.status(403).json({ message: "You are not allowed to update this review!" })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+const deleteReview = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const foundReview = await Review.findById(id);
+
+    if (!foundReview) return res.status(404).json({ message: "Review not found!" });
+
+    if (req.payload.role === "Admin" || foundReview.userId === req.payload.sub) {
+      const deletedReview = await Review.findByIdAndDelete(id);
+
+      return res.status(200).json({ message: "Delete successfully!", deletedReview });
+    } else return res.status(403).json({ message: "Only admin or review's owner can delete this review" })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+}
+
+const getHighest = async (req, res, next) => {
+  try {
+    const reviews = await Review.find().sort({ voteScore: -1 });
+
+    return res.status(200).json(reviews);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  };
+};
+
+const getLatest = async (req, res, next) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 });
+
+    return res.status(200).json(reviews);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  };
+};
+
+const getOldest = async (req, res, next) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: 1 });
+
+    return res.status(200).json(reviews);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  };
+};
+
 export {
   upvote,
   downvote,
+  update,
+  deleteReview,
+  getHighest,
+  getOldest,
+  getLatest,
 }
 

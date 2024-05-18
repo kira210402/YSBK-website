@@ -38,8 +38,8 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const activity = await Activity.findByIdAndUpdate(id, req.body);
-    if(!activity) return res.status(404).json({message: ACTIVITY_MESSAGE.NOT_FOUND});
+    const activity = await Activity.findByIdAndUpdate(id, req.body, { new: true });
+    if (!activity) return res.status(404).json({ message: ACTIVITY_MESSAGE.NOT_FOUND });
 
     return res.status(200).json(activity);
   } catch (error) {
@@ -48,21 +48,34 @@ const update = async (req, res, next) => {
 };
 
 const deleteActivity = async (req, res, next) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const foundActivity = await Activity.findByIdAndDelete(id);
 
-    if(!foundActivity) return res.status(404).json({message: ACTIVITY_MESSAGE.NOT_FOUND});
+    if (!foundActivity) return res.status(404).json({ message: ACTIVITY_MESSAGE.NOT_FOUND });
 
-    return res.status(200).json({message: ACTIVITY_MESSAGE.DELETE_SUCCESS});
+    return res.status(200).json({ message: ACTIVITY_MESSAGE.DELETE_SUCCESS });
   } catch (error) {
     return res.status(500).json({ error });
   }
 };
 
+const getActivitiesByStatus = async (req, res, next) => {
+  const {status} = req.params;
+  try {
+    const activities = await Activity.find({status});
+
+    return res.status(200).json(activities);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+}
+
 export {
   getAll,
   getOne,
+  getActivitiesByStatus,
   create,
   update,
   deleteActivity,

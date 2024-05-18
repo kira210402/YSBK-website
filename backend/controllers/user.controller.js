@@ -1,6 +1,8 @@
 import { USER_MESSAGE } from "../constants/index.js";
 import User from "../models/user.model.js";
 import Book from "../models/book.model.js";
+import Review from "../models/review.model.js";
+import Comment from "../models/comment.model.js";
 
 const getAll = async (req, res, next) => {
   try {
@@ -64,93 +66,109 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-// // /users/add-book/:userId/:bookId
-const addBook = async (req, res, next) => {
-  const { userId, bookId } = req.params;
-  try {
-    if (userId === req.payload.sub) {
-      // Kiểm tra xem bookId có tồn tại không
-      const book = await Book.findById(bookId);
-      if (!book) {
-        return res.status(404).json({ message: 'Book not found' });
-      }
+// // // /users/add-book/:bookId
+// const addBook = async (req, res, next) => {
+//   const { bookId } = req.params;
+//   try {
+//     // Kiểm tra xem bookId có tồn tại không
+//     const book = await Book.findById(bookId);
+//     if (!book) {
+//       return res.status(404).json({ message: 'Book not found' });
+//     }
 
-      // Cập nhật user để thêm bookId vào mảng books
-      const user = await User.findByIdAndUpdate(
-        userId,
-        { $addToSet: { books: bookId } }, // Sử dụng $addToSet để tránh thêm trùng lặp
-        { new: true } // Trả về user đã được cập nhật
-      ).populate('books');
+//     // Cập nhật user để thêm bookId vào mảng books
+//     const user = await User.findByIdAndUpdate(
+//       req.payload.sub,
+//       { $addToSet: { books: bookId } }, // Sử dụng $addToSet để tránh thêm trùng lặp
+//       { new: true } // Trả về user đã được cập nhật
+//     ).populate('books');
 
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-      return res.status(200).json(user);
-    } else return res.status(403).json({ message: "You are not allowed to add book for others!" })
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-}
+//     return res.status(200).json(user);
+//   } catch (error) {
+//     return res.status(500).json({ error });
+//   }
+// }
 
-// /users/add-review/:userId/:bookId
+// /users/add-review/:bookId
 const addReview = async (req, res, next) => {
-  const { userId, bookId } = req.params;
-  const { content, voteScore } = req.body;
+  const { bookId } = req.params;
+  const { content, rating } = req.body;
 
   try {
-    if (userId === req.payload.sub) {
-    // Kiểm tra xem userId và bookId có tồn tại không
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+    // Kiểm tra xem bookId có tồn tại không
 
     const book = await Book.findById(bookId);
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
-    }
+    };
+
+    const foundReview = await Review.findOne({bookId, userId: req.payload.sub});
+    if(foundReview) return res.status(400).json({message: "You already reviewed this book!"});
 
     // Tạo review mới
     const newReview = new Review({
-      userId,
+      userId: req.payload.sub,
       bookId,
       content,
-      voteScore
     });
 
     await newReview.save();
 
     // Cập nhật book để thêm review vào mảng reviews
-    await Book.findByIdAndUpdate(
+    const updatedBook = await Book.findByIdAndUpdate(
       bookId,
-      { $push: { reviews: newReview._id } }, // Thêm review vào mảng reviews
+      { $push: { reviews: newReview._id, rating } }, // Thêm review vào mảng reviews
       { new: true } // Trả về book đã được cập nhật
     ).populate('reviews');
 
-    return res.status(201).json(newReview);
-  } else return res.status(403).json({message: "You are not allowed to add review for others"})
+    await User.findByIdAndUpdate(
+      req.payload.sub,
+      { $push: { books: bookId } },
+      { new: true }
+    ).populate("books");
+
+    const ratings = updatedBook.rating;
+    const finalRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+
+    return res.status(201).json(newReview, finalRating);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error });
   }
 };
 
 const addComment = async (req, res, next) => {
-  const { userId, reviewId } = req.params;
+  const { reviewId } = req.params;
   const { content } = req.body;
   try {
-    if (userId === req.payload.sub) {
     const newComment = await Comment.create({
-      userId,
+      userId: req.payload.sub,
       reviewId,
       content
     });
-    newComment = newComment.toJSON();
 
     return res.status(201).json(newComment);
-  } else return res.status(403).json({message: "You are not allowed to add comment for others"})
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error });
   }
+};
+
+const ratingBook = async (req, res, next) => {
+  const { bookId } = req.params;
+  const { rating } = req.body;
+  try {
+    const foundBook = await Book.findByIdAndUpdate(bookId, { $push: { rating } });
+
+    if (!foundBook) return res.status(404).json({ message: "Book not found!" })
+
+    const finalRating = foundBook.rating;
+    console.log(finalRating);
+    return res.status(200).json();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  };
 };
 
 export {
@@ -159,8 +177,8 @@ export {
   create,
   update,
   deleteUser,
-  addBook,
   addReview,
   addComment,
+  ratingBook,
 }
 

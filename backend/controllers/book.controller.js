@@ -1,9 +1,11 @@
+import mongoose from "mongoose";
 import { BOOK_MESSAGE } from "../constants/index.js";
 import Book from "../models/book.model.js";
+import User from "../models/user.model.js";
 
 const getAll = async (req, res, next) => {
   try {
-    const books = await Book.find();
+    const books = await Book.find().sort({rating: -1});
 
     return res.status(200).json(books);
   } catch (error) {
@@ -77,15 +79,18 @@ const getBooksByStatus = async (req, res, next) => {
 
 
 const create = async (req, res, next) => {
-  const { bookCode } = req.body;
+  const { bookCode, genre } = req.body;
   try {
     const foundBook = await Book.findOne({ bookCode });
 
-    if(foundBook) return res.status(400).json({message: "Book have already existed!"});
+    if (foundBook) return res.status(400).json({ message: "Book have already existed!" });
+
+    if (!bookCode.startsWith(genre)) return res.status(400).json({ message: "wrong genre!" });
 
     const book = await Book.create(req.body);
     return res.status(201).json(book);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error });
   }
 };
@@ -93,7 +98,7 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const book = await Book.findByIdAndUpdate(id, req.body);
+    const book = await Book.findByIdAndUpdate(id, req.body, { new: true });
 
     if (!book) return res.status(404).json({ message: BOOK_MESSAGE.NOT_FOUND });
 
@@ -116,6 +121,19 @@ const deleteBook = async (req, res, next) => {
   }
 };
 
+const getMyBooks = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.payload.sub).populate("books");
+
+    if(!user) return res.status(404).json({message: "User not found!"});
+
+    return res.status(200).json(user.books);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  };
+};
+
 export {
   getAll,
   getOne,
@@ -123,6 +141,7 @@ export {
   getBookByBookCode,
   getBooksByGenre,
   getBooksByStatus,
+  getMyBooks,
   create,
   update,
   deleteBook,

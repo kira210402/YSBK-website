@@ -2,7 +2,7 @@ import Book from "../models/book.model.js";
 import User from "../models/user.model.js";
 import Loan from "../models/loan.model.js";
 
-const borrowBook = async(req, res, next) => {
+const borrowBook = async (req, res, next) => {
   const { mssv, fullName, phoneNumber, bookCode, deposit } = req.body;
 
   try {
@@ -45,7 +45,7 @@ const borrowBook = async(req, res, next) => {
   }
 };
 
-const returnBook = async(req, res, next) => {
+const returnBook = async (req, res, next) => {
   const { bookCode } = req.params;
 
   try {
@@ -77,6 +77,53 @@ const returnBook = async(req, res, next) => {
   }
 };
 
+const filterByDate = async (req, res, next) => {
+  const { date } = req.params;
+  try {
+    const borrowDate = new Date(date);
+
+    const startOfDay = new Date(borrowDate.setUTCHours(0, 0, 0, 0));
+    const endOfDay = new Date(borrowDate.setUTCHours(23, 59, 59, 999));
+
+    const loans = await Loan.find(
+      {
+        borrowDate: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        }
+      });
+
+    return res.status(200).json(loans);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+const filterByMssv = async (req, res, next) => {
+  const { mssv } = req.params;
+  try {
+    const loans = await Loan.find({ mssv });
+
+    return res.status(200).json(loans);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+const filterByBookCode = async (req, res, next) => {
+  const { bookcode } = req.params;
+  try {
+    const loans = await Loan.find({ bookCode: bookcode });
+
+    return res.status(200).json(loans);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
 const updateBooksLoanAfterRegister = async (req, res) => {
   const { mssv } = req.params;
 
@@ -99,5 +146,8 @@ const updateBooksLoanAfterRegister = async (req, res) => {
 export {
   borrowBook,
   returnBook,
+  filterByBookCode,
+  filterByMssv,
+  filterByDate,
   updateBooksLoanAfterRegister,
 }

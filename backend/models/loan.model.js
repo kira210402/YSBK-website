@@ -3,7 +3,6 @@ import mongoose, { Schema } from "mongoose";
 const loanSchema = new mongoose.Schema({
   borrowDate: {
     type: Date,
-    required: true,
     default: Date.now,
   },
   fullName: {
@@ -20,7 +19,6 @@ const loanSchema = new mongoose.Schema({
   },
   bookTitle: {
     type: String,
-    required: true,
   },
   bookCode: {
     type: String,

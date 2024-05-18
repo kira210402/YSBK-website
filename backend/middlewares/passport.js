@@ -61,11 +61,11 @@ export const passportLocal = passport.use(new LocalStrategy({
     const user = await User.findOne({ email });
 
     if (!user) return done(null, false);
-
+    
     const validPassword = await user.isValidPassword(password);
-
+    
     if (!validPassword) return done(null, false);
-
+    
     done(null, user);
   } catch (error) {
     done(error, false);
