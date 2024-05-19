@@ -5,22 +5,42 @@ import User from "../models/user.model.js";
 
 const getAll = async (req, res, next) => {
   try {
-    const books = await Book.find().sort({rating: -1});
+    const books = await Book.find().populate("reviews");
 
-    return res.status(200).json(books);
+    const booksWithAvgRating = books.map(book => {
+      const ratings = book.rating;
+      const avgRating = ratings.reduce((acc, rate) => acc + rate, 0) / ratings.length || 0;
+      return {
+        ...book.toObject(),
+        avgRating: avgRating.toFixed(2)
+      }
+    });
+
+    booksWithAvgRating.sort((a, b) => b.avgRating - a.avgRating);
+
+    return res.status(200).json(booksWithAvgRating);
   } catch (error) {
-    return res.status(500).json({ error });
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
 const getOne = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const book = await Book.findById(id);
+    const book = await Book.findById(id).populate("reviews");
 
     if (!book) return res.status(404).json({ message: BOOK_MESSAGE.NOT_FOUND });
 
-    return res.status(200).json(book);
+    const ratings = book.rating;
+    const avgRating = ratings.reduce((acc, rate) => acc + rate, 0) / ratings.length || 0;
+
+    const bookWithAvgRating = {
+      ...book.toObject(),
+      avgRating: avgRating.toFixed(2)
+    }
+
+    return res.status(200).json(bookWithAvgRating);
   } catch (error) {
     return res.status(500).json({ error });
   }
@@ -125,7 +145,7 @@ const getMyBooks = async (req, res, next) => {
   try {
     const user = await User.findById(req.payload.sub).populate("books");
 
-    if(!user) return res.status(404).json({message: "User not found!"});
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
     return res.status(200).json(user.books);
   } catch (error) {

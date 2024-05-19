@@ -1,3 +1,4 @@
+import Book from "../models/book.model.js";
 import Review from "../models/review.model.js";
 import User from "../models/user.model.js";
 
@@ -52,14 +53,25 @@ const downvote = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   const { id } = req.params;
+  const { content, rating } = req.body;
   try {
     const review = await Review.findById(id);
     if (!review) return res.status(404).json({ message: "Review not found" });
 
     if (review.userId === req.payload.sub) {
-      const updatedReview = await Review.findByIdAndUpdate(id, req.body, { new: true });
+      const updatedReview = await Review.findByIdAndUpdate(id, content, { new: true });
 
-      return res.status(200).json(updatedReview);
+      const updatedBook = await Book.findByIdAndUpdate(updatedReview.bookId, { $push: { rating } }).populate("reviews");
+
+      const ratings = updatedBook.rating;
+      const avgRating = ratings.reduce((acc, rate) => acc + rate, 0) / ratings.length;
+      const updatedBookWithAvgRating = {
+        ...updatedBook.toObject(),
+        avgRating: avgRating.toFixed(2)
+      }
+
+      return res.status(200).json({ updatedReview, updatedBookWithAvgRating });
+
     } else return res.status(403).json({ message: "You are not allowed to update this review!" })
   } catch (error) {
     console.log(error);
