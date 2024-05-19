@@ -103,7 +103,7 @@ const getBooksByStatus = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   upload.single('image');
-  const { bookCode, genre } = req.body;
+  const { bookCode, genre, title, author, description } = req.body;
   try {
     const foundBook = await Book.findOne({ bookCode });
 
@@ -121,8 +121,13 @@ const create = async (req, res, next) => {
       imageUrl = result.secure_url;
     };
 
+
     const book = await Book.create({
-      ...req.body,
+      title,
+      author,
+      description,
+      bookCode,
+      genre,
       image: imageUrl,
     });
 
@@ -136,9 +141,9 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   upload.single("image");
   const { id } = req.params;
+  const {title, description, author, bookCode, genre} = req.body;
   try {
-    const book = await Book.findByIdAndUpdate(id, req.body, { new: true });
-
+    const book = await Book.findById(id);
     if (!book) return res.status(404).json({ message: BOOK_MESSAGE.NOT_FOUND });
 
     let imageUrl = book.image;
@@ -153,7 +158,13 @@ const update = async (req, res, next) => {
       imageUrl = result.secure_url;
     }
 
+    book.title = title || book.title;
+    book.author = author || book.author;
+    book.description = description || book.description;
+    book.bookCode = bookCode || book.bookCode;
+    book.genre = genre || book.genre;
     book.image = imageUrl;
+    
     await book.save();
 
     return res.status(200).json(book);

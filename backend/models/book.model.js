@@ -30,6 +30,7 @@ const bookSchema = new mongoose.Schema({
 
   bookCode: {
     type: String,
+    unique: true,
     required: true,
   },
 

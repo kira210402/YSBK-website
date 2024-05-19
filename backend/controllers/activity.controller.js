@@ -32,6 +32,7 @@ const getOne = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   upload.single("image");
+  const { title, description, content, status, startDate, endDate } = req.body;
   try {
     let imageUrl;
 
@@ -45,7 +46,12 @@ const create = async (req, res, next) => {
     }
 
     const activity = await Activity.create({
-      ...req.body,
+      title,
+      description,
+      content,
+      status,
+      startDate,
+      endDate,
       image: imageUrl,
     });
 
@@ -58,8 +64,9 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   const { id } = req.params;
+  const { title, description, content, status, startDate, endDate } = req.body;
   try {
-    const activity = await Activity.findByIdAndUpdate(id, req.body, { new: true });
+    const activity = await Activity.findById(id);
     if (!activity) return res.status(404).json({ message: ACTIVITY_MESSAGE.NOT_FOUND });
 
     let imageUrl = activity.image;
@@ -73,6 +80,12 @@ const update = async (req, res, next) => {
       imageUrl = result.secure_url;
     }
 
+    activity.title = title || activity.title;
+    activity.description = description || activity.description;
+    activity.content = content || activity.content;
+    activity.status = status || activity.status;
+    activity.startDate = startDate || activity.startDate;
+    activity.endDate = endDate || activity.endDate;
     activity.image = imageUrl;
     await activity.save();
 

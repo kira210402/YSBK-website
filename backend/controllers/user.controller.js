@@ -34,15 +34,15 @@ const getOne = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   upload.single("image");
-  const { mssv } = req.body;
+  const { username, email, mssv, password, authType, role } = req.body;
   try {
-    const foundUser = await User.findOne({mssv});
+    const foundUser = await User.findOne({ mssv });
 
-    if(foundUser) return res.status(400).json({message: "User had already existed!"});
+    if (foundUser) return res.status(400).json({ message: "User had already existed!" });
 
     let imageUrl;
 
-    if(req.file) {
+    if (req.file) {
       imageUrl = req.file.path;
     } else {
       const result = await cloudinary.uploader.upload(AVATAR_DEFAULT, {
@@ -53,7 +53,12 @@ const create = async (req, res, next) => {
     }
 
     const user = await User.create({
-      ...req.body,
+      username,
+      email,
+      mssv,
+      password,
+      authType: authType ? authType : "local",
+      role: role ? role : "User",
       avatar: imageUrl,
     });
 
@@ -67,6 +72,7 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   upload.single("image");
   const { id } = req.params;
+  const { username, email, mssv, password, authType, role } = req.body;
   try {
     if (id === req.payload.sub || req.payload.role === "Admin") {
       const user = await User.findByIdAndUpdate(id, req.body, { new: true });
@@ -75,9 +81,9 @@ const update = async (req, res, next) => {
 
       let imageUrl = user.avatar;
 
-      if(req.file) {
+      if (req.file) {
         imageUrl = req.file.path;
-      } else if(!user.avatar) {
+      } else if (!user.avatar) {
         const result = await cloudinary.uploader.upload(AVATAR_DEFAULT, {
           folder: "ysbk_images",
         });
@@ -85,9 +91,15 @@ const update = async (req, res, next) => {
         imageUrl = result.secure_url;
       };
 
+      user.username = username || user.username;
+      user.email = email || user.email;
+      user.mssv = mssv || user.mssv;
+      user.password = password || user.password;
+      user.authType = authType || user.authType;
+      user.role = role || user.role;
       user.avatar = imageUrl;
       await user.save();
-      
+
       return res.status(200).json(user);
     } else return res.status(403).json({ message: "You are not allowed to update this user!" })
   } catch (error) {
