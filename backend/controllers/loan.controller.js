@@ -2,8 +2,52 @@ import Book from "../models/book.model.js";
 import User from "../models/user.model.js";
 import Loan from "../models/loan.model.js";
 
+const getAllLoans = async (req, res, next) => {
+  try {
+    const loans = await Loan.find().sort({ borrowDate: -1 });
+
+    const borrowedLoans = await Loan.aggregate([
+      {
+        $match:
+          { status: "BORROWED" }
+      },
+      {
+        $group: {
+          _id: null,
+          totalDeposit: { $sum: '$deposit' }
+        }
+      }
+    ]);
+
+    const returnedLoans = await Loan.aggregate([
+      {
+        $match: {
+          status: " RETURNED"
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalDeposit: { $sum: "$deposit" }
+        }
+      }
+    ]);
+
+    const totalBorrowedDeposit = borrowedLoans[0]?.totalDeposit || 0;
+    const totalReturnedDeposit = returnedLoans[0]?.totalDeposit || 0;
+
+    const finalDeposit = totalBorrowedDeposit - totalReturnedDeposit;
+
+
+    return res.status(200).json({ loans, finalDeposit });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  };
+};
+
 const borrowBook = async (req, res, next) => {
-  const { mssv, fullName, phoneNumber, bookCode, deposit } = req.body;
+  const { mssv, fullName, phoneNumber, bookCode, deposit, finalDeposit } = req.body;
 
   try {
     // Tìm book
@@ -27,6 +71,8 @@ const borrowBook = async (req, res, next) => {
     });
 
     await loan.save();
+    
+    finalDeposit += loan.deposit;
 
     // Cập nhật trạng thái sách
     book.status = "BORROWED";
@@ -38,7 +84,7 @@ const borrowBook = async (req, res, next) => {
       await user.save();
     }
 
-    res.status(201).json(loan);
+    res.status(201).json({ loan, finalDeposit });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error' });
@@ -46,7 +92,7 @@ const borrowBook = async (req, res, next) => {
 };
 
 const returnBook = async (req, res, next) => {
-  const { bookCode } = req.params;
+  const { bookCode, finalDeposit } = req.params;
 
   try {
     // Tìm loan và book
@@ -67,10 +113,13 @@ const returnBook = async (req, res, next) => {
     book.status = "AVAILABLE";
     await book.save();
 
+    // comment 2 below code line because when a user return a book, books' user is still there!
     // Xóa sách khỏi danh sách của user nếu tồn tại
-    await User.updateOne({ mssv: loan.mssv }, { $pull: { books: book._id } });
+    // await User.updateOne({ mssv: loan.mssv }, { $pull: { books: book._id } });
 
-    res.status(200).json(loan);
+    finalDeposit -= loan.deposit;
+
+    res.status(200).json({ loan, finalDeposit });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error' });
@@ -144,6 +193,7 @@ const updateBooksLoanAfterRegister = async (req, res) => {
 };
 
 export {
+  getAllLoans,
   borrowBook,
   returnBook,
   filterByBookCode,
