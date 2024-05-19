@@ -1,7 +1,10 @@
-import mongoose from "mongoose";
-import { BOOK_MESSAGE } from "../constants/index.js";
+import { BOOK_MESSAGE, DEFAULT_IMAGE } from "../constants/index.js";
 import Book from "../models/book.model.js";
 import User from "../models/user.model.js";
+import multer from "multer";
+import { storage, cloudinary } from "../configs/cloudinary.config.js";
+const upload = multer({ storage });
+const BOOK_IMAGE_DEFAULT = DEFAULT_IMAGE.DEFAULT_BOOK_IMAGE;
 
 const getAll = async (req, res, next) => {
   try {
@@ -99,6 +102,7 @@ const getBooksByStatus = async (req, res, next) => {
 
 
 const create = async (req, res, next) => {
+  upload.single('image');
   const { bookCode, genre } = req.body;
   try {
     const foundBook = await Book.findOne({ bookCode });
@@ -107,7 +111,21 @@ const create = async (req, res, next) => {
 
     if (!bookCode.startsWith(genre)) return res.status(400).json({ message: "wrong genre!" });
 
-    const book = await Book.create(req.body);
+    let imageUrl;
+    if (req.file) {
+      imageUrl = req.file.path;
+    } else {
+      const result = await cloudinary.uploader.upload(BOOK_IMAGE_DEFAULT, {
+        folder: 'ysbk_images',
+      });
+      imageUrl = result.secure_url;
+    };
+
+    const book = await Book.create({
+      ...req.body,
+      image: imageUrl,
+    });
+
     return res.status(201).json(book);
   } catch (error) {
     console.log(error);
@@ -116,11 +134,27 @@ const create = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
+  upload.single("image");
   const { id } = req.params;
   try {
     const book = await Book.findByIdAndUpdate(id, req.body, { new: true });
 
     if (!book) return res.status(404).json({ message: BOOK_MESSAGE.NOT_FOUND });
+
+    let imageUrl = book.image;
+
+    if (req.file) {
+      imageUrl = req.file.path;
+    } else if (!book.image) {
+      const result = await cloudinary.uploader.upload(BOOK_IMAGE_DEFAULT, {
+        folder: "ysbk_images",
+      });
+
+      imageUrl = result.secure_url;
+    }
+
+    book.image = imageUrl;
+    await book.save();
 
     return res.status(200).json(book);
   } catch (error) {

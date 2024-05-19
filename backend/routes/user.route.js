@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", verifyToken, getAll);
 router.get("/:id", verifyToken, getOne);
-router.post("/", verifyAdmin, create);
+router.post("/", validateBody(schemas.signUpSchema), verifyAdmin, create);
 router.put("/:id", validateBody(schemas.userUpdateSchema), verifyToken, update);
 router.delete("/:id", verifyAdmin, deleteUser);
 
@@ -19,6 +19,4 @@ router.post("/add-review/:bookId", verifyToken, addReview);
 // add comment to one review
 router.post("/add-comment/:reviewId", verifyToken, addComment);
 
-// rate a book
-router.put("/rating/:bookId", verifyToken, ratingBook);
 export default router;

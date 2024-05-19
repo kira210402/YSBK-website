@@ -1,8 +1,12 @@
-import { USER_MESSAGE } from "../constants/index.js";
+import { DEFAULT_IMAGE, USER_MESSAGE } from "../constants/index.js";
 import User from "../models/user.model.js";
 import Book from "../models/book.model.js";
 import Review from "../models/review.model.js";
 import Comment from "../models/comment.model.js";
+import multer from "multer";
+import { storage, cloudinary } from "../configs/cloudinary.config.js";
+const upload = multer({ storage });
+const AVATAR_DEFAULT = DEFAULT_IMAGE.DEFAULT_AVATAR;
 
 const getAll = async (req, res, next) => {
   try {
@@ -29,16 +33,39 @@ const getOne = async (req, res, next) => {
 };
 
 const create = async (req, res, next) => {
+  upload.single("image");
+  const { mssv } = req.body;
   try {
-    const user = await User.create(req.body);
+    const foundUser = await User.findOne({mssv});
+
+    if(foundUser) return res.status(400).json({message: "User had already existed!"});
+
+    let imageUrl;
+
+    if(req.file) {
+      imageUrl = req.file.path;
+    } else {
+      const result = await cloudinary.uploader.upload(AVATAR_DEFAULT, {
+        folder: "ysbk_images"
+      });
+
+      imageUrl = result.secure_url;
+    }
+
+    const user = await User.create({
+      ...req.body,
+      avatar: imageUrl,
+    });
 
     return res.status(201).json(user);
   } catch (error) {
-    return res.status(500).json({ error });
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
 const update = async (req, res, next) => {
+  upload.single("image");
   const { id } = req.params;
   try {
     if (id === req.payload.sub || req.payload.role === "Admin") {
@@ -46,6 +73,21 @@ const update = async (req, res, next) => {
 
       if (!user) return res.status(404).json({ message: USER_MESSAGE.NOT_FOUND });
 
+      let imageUrl = user.avatar;
+
+      if(req.file) {
+        imageUrl = req.file.path;
+      } else if(!user.avatar) {
+        const result = await cloudinary.uploader.upload(AVATAR_DEFAULT, {
+          folder: "ysbk_images",
+        });
+
+        imageUrl = result.secure_url;
+      };
+
+      user.avatar = imageUrl;
+      await user.save();
+      
       return res.status(200).json(user);
     } else return res.status(403).json({ message: "You are not allowed to update this user!" })
   } catch (error) {
@@ -102,8 +144,8 @@ const addReview = async (req, res, next) => {
       return res.status(404).json({ message: 'Book not found' });
     };
 
-    const foundReview = await Review.findOne({bookId, userId: req.payload.sub});
-    if(foundReview) return res.status(400).json({message: "You already reviewed this book!"});
+    const foundReview = await Review.findOne({ bookId, userId: req.payload.sub });
+    if (foundReview) return res.status(400).json({ message: "You already reviewed this book!" });
 
     // Tạo review mới
     const newReview = new Review({
@@ -154,22 +196,22 @@ const addComment = async (req, res, next) => {
   }
 };
 
-const ratingBook = async (req, res, next) => {
-  const { bookId } = req.params;
-  const { rating } = req.body;
-  try {
-    const foundBook = await Book.findByIdAndUpdate(bookId, { $push: { rating } });
+// const ratingBook = async (req, res, next) => {
+//   const { bookId } = req.params;
+//   const { rating } = req.body;
+//   try {
+//     const foundBook = await Book.findByIdAndUpdate(bookId, { $push: { rating } });
 
-    if (!foundBook) return res.status(404).json({ message: "Book not found!" })
+//     if (!foundBook) return res.status(404).json({ message: "Book not found!" })
 
-    const finalRating = foundBook.rating;
-    console.log(finalRating);
-    return res.status(200).json();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(error);
-  };
-};
+//     const finalRating = foundBook.rating;
+//     console.log(finalRating);
+//     return res.status(200).json();
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json(error);
+//   };
+// };
 
 export {
   getAll,
@@ -179,6 +221,5 @@ export {
   deleteUser,
   addReview,
   addComment,
-  ratingBook,
 }
 
