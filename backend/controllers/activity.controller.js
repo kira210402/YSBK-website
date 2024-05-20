@@ -1,4 +1,3 @@
-import { UploadStream } from "cloudinary";
 import { ACTIVITY_MESSAGE, DEFAULT_IMAGE } from "../constants/index.js";
 import Activity from "../models/activity.model.js";
 import multer from "multer";
@@ -8,9 +7,22 @@ const ACTIVITY_IMAGE_DEFAULT = DEFAULT_IMAGE.DEFAULT_EVENT_IMAGE;
 
 const getAll = async (req, res, next) => {
   try {
-    const activities = await Activity.find();
+     const page = parseInt(req.query.page) || 1; // default page = 1
+     const limit = parseInt(req.query.limit) || 10; // default limit = 20
+     
+     const skip = (page - 1) * limit;
 
-    return res.status(200).json(activities);
+    const activities = await Activity.find().skip(skip).limit(limit);
+
+    const totalActivities = await Activity.countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalActivities,
+      totalPages: Math.ceil(totalActivities / limit),
+      activities
+    });
   } catch (error) {
     return res.status(500).json({ error });
   }
@@ -111,9 +123,22 @@ const deleteActivity = async (req, res, next) => {
 const getActivitiesByStatus = async (req, res, next) => {
   const { status } = req.params;
   try {
-    const activities = await Activity.find({ status });
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 10; // default limit = 20
+    
+    const skip = (page - 1) * limit;
 
-    return res.status(200).json(activities);
+    const activities = await Activity.find({ status }).skip(skip).limit(limit);
+
+    const totalActivities = await Activity.find({status}).countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalActivities,
+      totalPages: Math.ceil(totalActivities / limit),
+      activities
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);

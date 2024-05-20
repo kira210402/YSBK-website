@@ -16,13 +16,26 @@ const getAbout = async (req, res) => {
 
 const getLeaderBoard = async (req, res, next) => {
   try {
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
+    
+    const skip = (page - 1) * limit;
+
     const users = await User.aggregate([
       {
         $sort: { score: -1 } // Sắp xếp theo score từ lớn đến bé
       }
-    ]);
+    ]).skip(skip).limit(limit);
 
-    return res.status(200).json(users);
+    const totalUsers = await User.countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalUsers,
+      totalPages: Math.ceil(totalUsers / limit),
+      users
+    });
   } catch (error) {
     return res.status(500).json({ error });
   }

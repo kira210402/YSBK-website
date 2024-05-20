@@ -1,5 +1,5 @@
 import express from "express";
-import { addComment, addReview, create, deleteUser, getAll, getOne, ratingBook, update } from "../controllers/user.controller.js";
+import { addComment, addReview, create, deleteUser, getAll, getOne, update } from "../controllers/user.controller.js";
 import { verifyAdmin, verifyToken } from "../middlewares/auth.middleware.js";
 import { schemas, validateBody } from "../middlewares/validateData.js";
 const router = express.Router();

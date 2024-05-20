@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from '../helpers/config-env';
+import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from '../helpers/config-env.js';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 // Configuration

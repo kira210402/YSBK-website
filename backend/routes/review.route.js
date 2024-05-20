@@ -9,8 +9,8 @@ router.put("/:id", verifyToken, update);
 router.delete("/:id", verifyToken, deleteReview);
 
 // filter review by highest, latest, oldest
-router.get("/highest", verifyToken, getHighest);
-router.get("/latest", verifyToken, getLatest);
-router.get("/oldest", verifyToken, getOldest);
+router.get("/highest/:bookId", verifyToken, getHighest);
+router.get("/latest/:bookId", verifyToken, getLatest);
+router.get("/oldest/:bookId", verifyToken, getOldest);
 
 export default router;

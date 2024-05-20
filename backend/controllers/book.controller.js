@@ -8,7 +8,12 @@ const BOOK_IMAGE_DEFAULT = DEFAULT_IMAGE.DEFAULT_BOOK_IMAGE;
 
 const getAll = async (req, res, next) => {
   try {
-    const books = await Book.find().populate("reviews");
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
+
+    const skip = (page - 1) * limit;
+
+    const books = await Book.find().skip(skip).limit(limit);
 
     const booksWithAvgRating = books.map(book => {
       const ratings = book.rating;
@@ -21,7 +26,15 @@ const getAll = async (req, res, next) => {
 
     booksWithAvgRating.sort((a, b) => b.avgRating - a.avgRating);
 
-    return res.status(200).json(booksWithAvgRating);
+    const totalBooks = await Book.countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit),
+      booksWithAvgRating,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
@@ -81,9 +94,22 @@ const getBookByBookCode = async (req, res, next) => {
 const getBooksByGenre = async (req, res, next) => {
   const { genre } = req.params;
   try {
-    const books = await Book.find({ genre });
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
 
-    return res.status(200).json(books);
+    const skip = (page - 1) * limit;
+
+    const books = await Book.find({ genre }).skip(skip).limit(limit);
+
+    const totalBooks = await Book.countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit),
+      books
+    });
   } catch (error) {
     return res.status(500).json({ error });
   }
@@ -92,9 +118,22 @@ const getBooksByGenre = async (req, res, next) => {
 const getBooksByStatus = async (req, res, next) => {
   const { status } = req.params;
   try {
-    const books = await Book.find({ status });
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
 
-    return res.status(200).json(books);
+    const skip = (page - 1) * limit;
+
+    const books = await Book.find({ status }).skip(skip).limit(limit);
+
+    const totalBooks = await Book.countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit),
+      books
+    });
   } catch (error) {
     return res.status(500).json({ error });
   }
@@ -141,7 +180,7 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   upload.single("image");
   const { id } = req.params;
-  const {title, description, author, bookCode, genre} = req.body;
+  const { title, description, author, bookCode, genre } = req.body;
   try {
     const book = await Book.findById(id);
     if (!book) return res.status(404).json({ message: BOOK_MESSAGE.NOT_FOUND });
@@ -164,7 +203,7 @@ const update = async (req, res, next) => {
     book.bookCode = bookCode || book.bookCode;
     book.genre = genre || book.genre;
     book.image = imageUrl;
-    
+
     await book.save();
 
     return res.status(200).json(book);
@@ -188,11 +227,28 @@ const deleteBook = async (req, res, next) => {
 
 const getMyBooks = async (req, res, next) => {
   try {
-    const user = await User.findById(req.payload.sub).populate("books");
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
+
+    const skip = (page - 1) * limit;
+
+    const user = await User.findById(req.payload.sub);
 
     if (!user) return res.status(404).json({ message: "User not found!" });
 
-    return res.status(200).json(user.books);
+    const books = await Book.find({ _id: { $in: user.books}})
+      .skip(skip)
+      .limit(limit);
+
+    const totalBooks = await Book.countDocuments({ _id: {$in: user.books}});
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit),
+      books
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);

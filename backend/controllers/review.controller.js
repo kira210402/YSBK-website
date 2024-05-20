@@ -99,10 +99,24 @@ const deleteReview = async (req, res, next) => {
 }
 
 const getHighest = async (req, res, next) => {
+  const { bookId } = req.params;
   try {
-    const reviews = await Review.find().sort({ voteScore: -1 });
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
 
-    return res.status(200).json(reviews);
+    const skip = (page - 1) * limit;
+
+    const reviews = await Review.find({ bookId }).sort({ voteScore: -1 }).skip(skip).limit(limit);
+
+    const totalReviews = await Review.find({ bookId }).countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalReviews,
+      totalPages: Math.ceil(totalReviews / limit),
+      reviews
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -110,10 +124,25 @@ const getHighest = async (req, res, next) => {
 };
 
 const getLatest = async (req, res, next) => {
-  try {
-    const reviews = await Review.find().sort({ createdAt: -1 });
+  const { bookId } = req.params;
 
-    return res.status(200).json(reviews);
+  try {
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
+
+    const skip = (page - 1) * limit;
+
+    const reviews = await Review.find({ bookId }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+    const totalReviews = await Review.find({ bookId }).countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalReviews,
+      totalPages: Math.ceil(totalReviews / limit),
+      reviews
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -121,10 +150,25 @@ const getLatest = async (req, res, next) => {
 };
 
 const getOldest = async (req, res, next) => {
-  try {
-    const reviews = await Review.find().sort({ createdAt: 1 });
+  const { bookId } = req.params;
 
-    return res.status(200).json(reviews);
+  try {
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
+    
+    const skip = (page - 1) * limit;
+
+    const reviews = await Review.find({ bookId }).sort({ createdAt: 1 }).skip(skip).limit(limit);
+
+    const totalReviews = await Review.find({bookId}).countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalReviews,
+      totalPages: Math.ceil(totalReviews / limit),
+      reviews
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
