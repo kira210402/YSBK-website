@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { SERVER_URL } from '../../config/env.config';
+import { SERVER_URL } from '../../configs/env.config';
 
 const socket = io(SERVER_URL);
 

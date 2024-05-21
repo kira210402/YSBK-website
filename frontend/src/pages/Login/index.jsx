@@ -1,7 +1,7 @@
 import React from 'react';
 import "./login.css";
 import { Link } from "react-router-dom";
-import { SERVER_URL } from '../../config/env.config';
+import { SERVER_URL } from '../../configs/env.config';
 
 export const Login = () => {
   const googleAuth = () => {

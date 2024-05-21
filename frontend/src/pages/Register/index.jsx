@@ -1,7 +1,7 @@
 import React from 'react';
 import "./register.css";
 import { Link } from "react-router-dom";
-import { SERVER_URL } from '../../config/env.config';
+import { SERVER_URL } from '../../configs/env.config';
 
 export const Register = () => {
   const googleAuth = () => {
@@ -10,6 +10,7 @@ export const Register = () => {
       "_self"
     )
   }
+
   return (
     <div className="container">
       <h1 className="heading">Sign up Form</h1>

@@ -1,0 +1,107 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Italianno", cursive;
+}
+
+
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.wrapper__left {
+    grid-column: 1/2;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #faf6ea;
+}
+
+.wrapper__right {
+    grid-column: 2/3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('./right__background.png');
+    background-size: auto;
+    background-position: 70%;
+}
+
+.left__ornament {
+    position: absolute;
+    bottom: 0;
+}
+
+.left__ornament-left {
+    left: 3%;
+}
+
+.left__ornament-right {
+    right: 3%;
+}
+
+.wrapper__left form {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    gap: 1rem;
+    align-items: center;
+}
+
+.wrapper__left form input {
+    font-size: 1rem;
+    padding: .5rem;
+    width: 100%;
+    border-bottom: 1px solid #3E3E3E;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background-color: transparent;
+    font-family: "EB Garamond", serif;
+}
+
+.wrapper__left form button {
+    margin-top: 1rem;
+    background-color: transparent;
+    border: none;
+    font-size: 2rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    cursor: pointer;
+    font-family: "EB Garamond", serif;
+}
+
+.wrapper__left form a {
+    color: black;
+    font-family: "EB Garamond", serif;
+}
+
+.wrapper__left form span {
+    color: black;
+    font-family: "EB Garamond", serif;
+}
+
+.wrapper__left form input::placeholder {
+    color: #AFAFAF
+}
+
+.wrapper__left form input:focus {
+    outline: none;
+}
+
+.wrapper__left .left__topper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wrapper__left .left__topper h1 {
+    font-size: 3rem;
+    font-weight: 200;
+    margin-top: 3rem;
+}

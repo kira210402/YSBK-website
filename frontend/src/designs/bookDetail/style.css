@@ -1,0 +1,371 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "EB Garamond", serif;
+
+}
+
+.navigation {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    height: 12vh;
+    background-color: #FAF6EA;
+    justify-content: space-between;
+    padding: 0 10rem;
+    margin-bottom: 1rem;
+}
+
+.navigation__logo {
+    cursor: pointer;
+    margin-right: 3rem;
+    transform: translateY(-.3rem);
+}
+
+.navigation svg {
+    height: 1.7rem;
+    width: 1.7rem;
+    fill: #59361B;
+    cursor: pointer;
+}
+
+.navigation__right {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+}
+
+.navigation__avatar {
+    width: 3rem;
+    height: 3rem;
+    background-image: url(./avatar.png);
+    background-size: cover;
+    border-radius: 50%;
+    cursor: pointer;
+
+}
+
+.navigation input {
+    background-color: transparent;
+    border-bottom: 1px solid #955d3275;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-size: 1.2rem;
+    color: #59361B;
+    width: 30rem;
+}
+
+.navigation__search-container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-right: auto;
+
+}
+
+.navigation__search-container svg {
+    transform: rotate(90deg);
+}
+
+.navigation input:focus {
+    outline: none;
+}
+
+.footer {
+    background-color: #818F78;
+    width: 100%;
+    height: 15rem;
+    color: white;
+    padding: 1rem 10rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.footer a {
+    text-decoration: none;
+}
+
+.footer svg {
+    height: 2rem;
+    width: 2rem;
+}
+
+.footer__facebook {
+    transform: scale(1.2);
+}
+
+.footer__twitter {
+    transform: scale(1.05);
+}
+
+.social__container {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer__mail-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.main {
+    padding: 0 10rem;
+    color: #59361B
+}
+
+.main__category {
+    list-style: none;
+    display: flex;
+    width: max-content;
+    background-color: transparent;
+    border: 2px solid #818F78;
+    border-radius: 50px;
+    color: #818F78;
+    overflow: hidden;
+    margin: 3rem auto
+}
+
+.main__category li {
+    padding: .5rem 2rem;
+    cursor: pointer;
+
+    transition: all .2s ease-in-out;
+}
+
+.main__category li:hover {
+    background-color: #818F78;
+    color: white;
+}
+
+.main__category li:first-child {
+    background-color: #818F78;
+    color: white;
+}
+
+.book {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    color: #59361B
+}
+
+.book__right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 2rem;
+}
+
+.book__right span {
+    align-self: flex-end;
+    font-style: italic;
+}
+
+.book__right p {
+    align-self: flex-end;
+    text-align: left;
+    line-height: 2rem;
+}
+
+.book__right h1 {
+    font-size: 2.5rem;
+}
+
+.book img {
+    width: 20rem;
+
+}
+
+.book__status-true {
+    font-style: italic;
+    color: rgb(98, 212, 128);
+}
+
+.book__status {
+    font-weight: 800;
+    color: #59361B !important;
+    font-size: 1.2rem;
+}
+
+.book__customer {
+    margin-top: 1rem;
+    font-weight: 800;
+    color: #59361B !important;
+    font-size: 1.2rem;
+}
+
+.book__detail {
+    margin-top: 2rem;
+
+    display: grid;
+    grid-template-columns: max-content 1fr;
+}
+
+.main__star-container {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.main__star-full,
+.main__star-half {
+    height: 4rem;
+    width: 4rem;
+    fill: #818F78
+}
+
+.book__stat {
+    color: #59361B !important;
+    font-size: 2rem;
+    margin-left: .5rem;
+
+}
+
+.book__review {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: rgb(158, 158, 158);
+    font-style: italic;
+    font-weight: 300;
+}
+
+.book__review-detail {
+    font-size: 1.2rem;
+}
+
+.book__detail-right {
+    padding: 0 2rem;
+}
+
+.book__comment:not(:last-child) {
+    border-bottom: 1px solid #59361B;
+}
+
+.book__comment {
+    padding: 1rem 0;
+}
+
+.comment__star-full,
+.comment__star-half {
+    fill: #818F78;
+    height: 2rem;
+    width: 2rem;
+}
+
+.book__review-form {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.book__review-form button {
+    background-color: #59361B;
+    padding: 1rem 2rem;
+    color: white;
+    font-size: 1rem;
+    border: 1px solid #59361B;
+    border-radius: 10px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+
+}
+
+.book__review-form button:hover {
+    background-color: transparent;
+    color: #59361B;
+}
+
+.book__review-form svg {
+    fill: #818F78;
+    height: 2rem;
+    width: 2rem;
+}
+
+
+.book__review-form textarea {
+    width: 100%;
+    resize: none;
+    height: 10rem;
+    font-size: 1rem;
+    color: #59361B
+}
+
+.book__review-form textarea:focus {
+    outline: none;
+
+}
+
+.main__page-number {
+    list-style: none;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-family: "EB Garamond", serif;
+    margin: 3rem 0rem;
+    color: #818F78;
+}
+
+.main__page-number li {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+
+.main__page-number li:first-child {
+    border: 1px solid #818F78;
+    background-color: #818F78;
+    color: white
+}
+
+.main__page-number li:hover {
+    background-color: #818F78;
+    color: white
+}
+
+.main__page-last {
+    transform: rotate(-90deg);
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.main__page-next {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.main__page-next-container {
+    border: 1px solid #818F78;
+    transition: all .2s ease-in-out;
+}
+
+.main__page-last-container {
+    border: 1px solid #818F78;
+    transition: all .2s ease-in-out;
+}
+
+.main__page-next-container:hover svg {
+    fill: white;
+}
+
+.main__page-last-container:hover svg {
+    fill: white;
+}
+
+.main__page-next-container:hover {
+    background-color: #818F78;
+}
+
+.main__page-last-container:hover {
+    background-color: #818F78;
+}
