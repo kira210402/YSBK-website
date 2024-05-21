@@ -1,11 +1,12 @@
 import React from 'react';
 import "./login.css";
 import { Link } from "react-router-dom";
+import { SERVER_URL } from '../../config/env.config';
 
 export const Login = () => {
   const googleAuth = () => {
     window.open(
-      `http://localhost:8000/auth/google/callback`,
+      `${SERVER_URL}/auth/google/callback`,
       "_self"
     )
   }

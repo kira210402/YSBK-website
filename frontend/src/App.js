@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Register } from "./pages/Register";
-import { Login } from "./pages/Login"; 
+import { Login } from "./pages/Login";
 import { HomePage } from "./pages/HomePage";
 import { Book } from "./pages/Book";
 import { LeaderBoard } from "./pages/LeaderBoard";
@@ -10,6 +10,7 @@ import { User } from "./pages/User";
 import { NoMatch } from "./pages/NoMatch";
 import axios from "axios";
 import "./App.css";
+import { SERVER_URL } from "./config/env.config.js";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -17,7 +18,7 @@ function App() {
   const getUser = async () => {
     try {
       // const url = `${process.env.SERVER_URL}/auth/login/success`;
-      const url = "http://localhost:8000/auth/google/callback";
+      const url = `${SERVER_URL}/auth/google/callback`;
       const { data } = await axios.get(url, { withCredentials: true });
       setUser(data.user._json);
     } catch (error) {
@@ -42,6 +43,7 @@ function App() {
       </Routes >
     </>
   );
+  
 }
 
 export default App;

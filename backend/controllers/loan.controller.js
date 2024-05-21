@@ -4,7 +4,14 @@ import Loan from "../models/loan.model.js";
 
 const getAllLoans = async (req, res, next) => {
   try {
-    const loans = await Loan.find().sort({ borrowDate: -1 });
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
+
+    const skip = (page - 1) * limit;
+
+    const loans = await Loan.find().sort({ borrowDate: -1 }).skip(skip).limit(limit);
+
+    const totalLoans = await Loan.countDocuments();
 
     const borrowedLoans = await Loan.aggregate([
       {
@@ -38,8 +45,14 @@ const getAllLoans = async (req, res, next) => {
 
     const finalDeposit = totalBorrowedDeposit - totalReturnedDeposit;
 
-
-    return res.status(200).json({ loans, finalDeposit });
+    return res.status(200).json({
+      page,
+      limit,
+      totalLoans,
+      totalPages: Math.ceiling(totalLoans / limit),
+      loans,
+      finalDeposit
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -71,7 +84,7 @@ const borrowBook = async (req, res, next) => {
     });
 
     await loan.save();
-    
+
     finalDeposit += loan.deposit;
 
     // Cập nhật trạng thái sách
@@ -173,6 +186,31 @@ const filterByBookCode = async (req, res, next) => {
   }
 };
 
+const filterByStatus = async (req, res, next) => {
+  const { status } = req.params;
+  try {
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = parseInt(req.query.limit) || 20; // default limit = 20
+
+    const skip = (page - 1) * limit;
+
+    const loans = await Loan.find({ status }).skip(skip).limit(limit);
+
+    const totalLoans = await Loan.find({ status }).countDocuments();
+
+    return res.status(200).json({
+      page,
+      limit,
+      totalLoans,
+      totalPages: Math.ceiling(totalLoans / limit),
+      loans
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  };
+};
+
 const updateBooksLoanAfterRegister = async (req, res) => {
   const { mssv } = req.params;
 
@@ -199,5 +237,6 @@ export {
   filterByBookCode,
   filterByMssv,
   filterByDate,
+  filterByStatus,
   updateBooksLoanAfterRegister,
 }

@@ -2,6 +2,7 @@ import { ACTIVITY_MESSAGE, DEFAULT_IMAGE } from "../constants/index.js";
 import Activity from "../models/activity.model.js";
 import multer from "multer";
 import { storage, cloudinary } from "../configs/cloudinary.config.js";
+import { getIo } from "../configs/socket.config.js";
 const upload = multer({ storage });
 const ACTIVITY_IMAGE_DEFAULT = DEFAULT_IMAGE.DEFAULT_EVENT_IMAGE;
 
@@ -66,6 +67,8 @@ const create = async (req, res, next) => {
       endDate,
       image: imageUrl,
     });
+
+    getIo().enit("newActivity", activity);
 
     return res.status(201).json(activity);
   } catch (error) {
