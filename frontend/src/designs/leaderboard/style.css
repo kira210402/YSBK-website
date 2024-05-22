@@ -1,0 +1,263 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "EB Garamond", serif;
+}
+
+.navigation {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    height: 12vh;
+    background-color: #FAF6EA;
+    justify-content: space-between;
+    padding: 0 10rem;
+    margin-bottom: 1rem;
+}
+
+.navigation__logo {
+    cursor: pointer;
+    margin-right: 3rem;
+    transform: translateY(-.3rem);
+}
+
+.navigation svg {
+    height: 1.7rem;
+    width: 1.7rem;
+    fill: #59361B;
+    cursor: pointer;
+}
+
+.navigation__right {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+}
+
+.navigation__avatar {
+    width: 3rem;
+    height: 3rem;
+    background-image: url(./avatar.png);
+    background-size: cover;
+    border-radius: 50%;
+    cursor: pointer;
+
+}
+
+.navigation input {
+    background-color: transparent;
+    border-bottom: 1px solid #955d3275;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-size: 1.2rem;
+    color: #59361B;
+    width: 30rem;
+}
+
+.navigation__search-container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-right: auto;
+
+}
+
+.navigation__search-container svg {
+    transform: rotate(90deg);
+}
+
+.navigation input:focus {
+    outline: none;
+}
+
+.main {
+    padding: 0 10rem;
+}
+
+.main__category {
+    list-style: none;
+    display: flex;
+    width: max-content;
+    background-color: transparent;
+    border: 2px solid #818F78;
+    border-radius: 50px;
+    color: #818F78;
+    overflow: hidden;
+    margin: 3rem auto;
+}
+
+.main__category li {
+    padding: .5rem 2rem;
+    cursor: pointer;
+
+    transition: all .2s ease-in-out;
+}
+
+.main__category li:hover {
+    background-color: #818F78;
+    color: white;
+}
+
+.main__category li:first-child {
+    background-color: #818F78;
+    color: white;
+}
+
+.footer {
+    background-color: #818F78;
+    width: 100%;
+    height: 15rem;
+    color: white;
+    padding: 1rem 10rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.footer a {
+    text-decoration: none;
+}
+
+.footer svg {
+    height: 2rem;
+    width: 2rem;
+}
+
+.footer__facebook {
+    transform: scale(1.2);
+}
+
+.footer__twitter {
+    transform: scale(1.05);
+}
+
+.social__container {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer__mail-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.main__page-number {
+    list-style: none;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-family: "EB Garamond", serif;
+    margin: 3rem 0rem;
+    color: #818F78;
+}
+
+.main__page-number li {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+
+.main__page-number li:first-child {
+    border: 1px solid #818F78;
+    background-color: #818F78;
+    color: white
+}
+
+.main__page-number li:hover {
+    background-color: #818F78;
+    color: white
+}
+
+.main__page-last {
+    transform: rotate(-90deg);
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.main__page-next {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.main__page-next-container {
+    border: 1px solid #818F78;
+    transition: all .2s ease-in-out;
+}
+
+.main__page-last-container {
+    border: 1px solid #818F78;
+    transition: all .2s ease-in-out;
+}
+
+.main__page-next-container:hover svg {
+    fill: white;
+}
+
+.main__page-last-container:hover svg {
+    fill: white;
+}
+
+.main__page-next-container:hover {
+    background-color: #818F78;
+}
+
+.main__page-last-container:hover {
+    background-color: #818F78;
+}
+
+.main__leaderboard {
+    list-style: none;
+}
+
+.main__leaderboard li {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+    color: #59361B;
+    transition: all .2s ease-in-out;
+}
+
+.main__leaderboard-score {
+    font-weight: 100;
+    color: rgb(115, 115, 115);
+}
+
+.main__leaderboard a {
+    width: 100%;
+    height: max-content;
+}
+
+.main__leaderboard a:not(:last-child) li {
+    z-index: 2;
+    border-bottom: 1px solid #59361B !important;
+}
+
+.main__leaderboard-name {
+    margin-right: auto;
+}
+
+.main__leaderboard-avatar {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+}
+
+.main__leaderboard a {
+    text-decoration: none;
+}
+
+.main__leaderboard a:hover li {
+    background-color: rgb(235, 235, 235);
+}
