@@ -10,7 +10,7 @@ import { User } from "./pages/User";
 import { NoMatch } from "./pages/NoMatch";
 import axios from "axios";
 import "./App.css";
-import { SERVER_URL } from "./config/env.config.js";
+import { SERVER_URL } from "./configs/env.config.js";
 
 function App() {
   const [user, setUser] = useState(null);

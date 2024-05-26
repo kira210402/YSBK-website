@@ -100,15 +100,17 @@
     color: white;
 }
 
-.main__category li:first-child {
+.main__category li:nth-child(4) {
     background-color: #818F78;
     color: white;
 }
 
 
+
 .main__button-container {
     padding: 0.5rem 0rem;
     display: flex;
+    align-items: center;
 }
 
 .main__button-container button {
@@ -124,11 +126,11 @@
 
 .main__button-genre {
     border-right: 1px solid #59361B !important;
-    padding-right: 1.5rem;
+    padding-right: 2rem;
 }
 
 .main__button-status {
-    padding-left: 1.5rem;
+    padding-left: 1rem;
 }
 
 .main__button-book-container {
@@ -410,4 +412,48 @@ select:focus {
 .form__upload button:hover {
     color: #59361B;
     background-color: transparent;
+}
+
+.main__button-genre-container,
+.main__button-status-container {
+    position: relative;
+    width: 8rem;
+}
+
+.main__button-genre-container {
+    margin-right: 1rem;
+}
+
+.main__button-genre-option,
+.main__button-status-option {
+    display: flex;
+    background-color: white;
+    flex-direction: column;
+    box-shadow: 0 .2rem .2rem rgba(0, 0, 0, .3);
+    border-radius: 10px;
+    position: absolute;
+    top: 2rem;
+    right: 1rem;
+    width: 100%;
+    align-items: center;
+    overflow: hidden;
+}
+
+.main__button-genre-option a,
+.main__button-status-option a {
+    text-decoration: none;
+    color: #59361B;
+    width: 100%;
+    text-align: center;
+    padding: .5rem;
+}
+
+.main__button-genre-option a:hover,
+.main__button-status-option a:hover {
+    background-color: rgb(232, 232, 232);
+}
+
+.main__button-genre-option,
+.main__button-status-option {
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
 }

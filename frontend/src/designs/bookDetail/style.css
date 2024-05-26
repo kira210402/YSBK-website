@@ -141,10 +141,7 @@
     color: white;
 }
 
-.main__category li:first-child {
-    background-color: #818F78;
-    color: white;
-}
+
 
 .book {
     display: grid;
@@ -239,6 +236,13 @@
 
 .book__detail-right {
     padding: 0 2rem;
+    width: 100%;
+    margin-left: auto;
+}
+
+.book__detail-left {
+
+    width: 20rem;
 }
 
 .book__comment:not(:last-child) {
@@ -254,6 +258,11 @@
     fill: #818F78;
     height: 2rem;
     width: 2rem;
+}
+
+.comment__star-container {
+    display: flex;
+    align-items: center;
 }
 
 .book__review-form {
@@ -368,4 +377,80 @@
 
 .main__page-last-container:hover {
     background-color: #818F78;
+}
+
+.book__review-select {
+    display: flex;
+    align-items: center;
+    border: 1px solid #818F78;
+    width: max-content;
+    padding: 0 .5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    width: 5rem;
+}
+
+.book__review-select-container {
+    width: max-content;
+}
+
+.book__review-select-triangle {
+    width: .7rem !important;
+    height: .7rem !important;
+    margin-left: auto;
+}
+
+.book__review-options {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0 .2rem .2rem rgba(0, 0, 0, .3);
+    width: max-content;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    position: absolute;
+    width: 5rem;
+    border-radius: 10px;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    z-index: 2;
+}
+
+.book__review-options li {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: .45rem
+}
+
+.book__review-options li:hover {
+    background-color: #dbdbdb;
+}
+
+.book__review-form button:disabled {
+    opacity: .5;
+    pointer-events: none;
+}
+
+.book__review-form {
+    display: none
+}
+
+.book__review-reveal {
+    background-color: #818F78;
+    font-size: 1rem;
+    padding: 1rem 2rem;
+    border: 1px solid #818F78;
+    border-radius: 10px;
+    color: white;
+    transition: all .2s ease-in-out;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.book__review-reveal:hover {
+    background-color: transparent;
+    color: #818F78;
 }

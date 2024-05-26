@@ -60,11 +60,12 @@ const getAllLoans = async (req, res, next) => {
 };
 
 const borrowBook = async (req, res, next) => {
-  const { mssv, fullName, phoneNumber, bookCode, deposit, finalDeposit } = req.body;
+  const { mssv, fullName, phoneNumber, bookCode, deposit } = req.body;
+  let {finalDeposit} = req.body;
 
   try {
     // Tìm book
-    const book = await Book.findOne({ bookCode });
+    let book = await Book.findOne({ bookCode });
     if (!book || book.status !== "AVAILABLE") {
       return res.status(404).json({ message: 'Book not found or not available' });
     }
@@ -73,7 +74,7 @@ const borrowBook = async (req, res, next) => {
     let user = await User.findOne({ mssv });
 
     // Tạo bản ghi loan
-    const loan = new Loan({
+    let loan = new Loan({
       fullName: user ? user.username : fullName,
       mssv,
       phoneNumber,

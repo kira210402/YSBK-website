@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <title>HomePage</title>
+    <title>My Books</title>
 </head>
 
 <body>
@@ -144,20 +144,33 @@
             <li>Sách mượn</li>
         </ul>
         <div class="main__button-container">
-            <button class="main__button-genre">All genres <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M6.38988 12.6801C6.20901 12.5767 6.05911 12.4268 5.95576 12.2459L0.966136 3.51411C0.646458 2.95467 0.840821 2.24201 1.40026 1.92233C1.57654 1.8216 1.77606 1.76861 1.97909 1.76861L11.9583 1.76861C12.6027 1.76861 13.125 2.29095 13.125 2.93528C13.125 3.13831 13.072 3.33783 12.9713 3.51411L7.98166 12.2459C7.66198 12.8054 6.94932 12.9997 6.38988 12.6801Z"
-                        fill="#59361B" />
-                </svg>
-            </button>
-            <button class="main__button-status">All status <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M6.38988 12.6801C6.20901 12.5767 6.05911 12.4268 5.95576 12.2459L0.966136 3.51411C0.646458 2.95467 0.840821 2.24201 1.40026 1.92233C1.57654 1.8216 1.77606 1.76861 1.97909 1.76861L11.9583 1.76861C12.6027 1.76861 13.125 2.29095 13.125 2.93528C13.125 3.13831 13.072 3.33783 12.9713 3.51411L7.98166 12.2459C7.66198 12.8054 6.94932 12.9997 6.38988 12.6801Z"
-                        fill="#59361B" />
-                </svg>
-            </button>
+            <div class="main__button-genre-container">
+                <button class="main__button-genre">All genres <svg width="14" height="14" viewBox="0 0 14 14"
+                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M6.38988 12.6801C6.20901 12.5767 6.05911 12.4268 5.95576 12.2459L0.966136 3.51411C0.646458 2.95467 0.840821 2.24201 1.40026 1.92233C1.57654 1.8216 1.77606 1.76861 1.97909 1.76861L11.9583 1.76861C12.6027 1.76861 13.125 2.29095 13.125 2.93528C13.125 3.13831 13.072 3.33783 12.9713 3.51411L7.98166 12.2459C7.66198 12.8054 6.94932 12.9997 6.38988 12.6801Z"
+                            fill="#59361B" />
+                    </svg>
+                </button>
+                <div class="main__button-genre-option">
+                    <a href="">VN</a>
+                    <a href="">NN</a>
+                    <a href="">SK</a>
+                </div>
+            </div>
+            <div class="main__button-status-container">
+                <button class="main__button-status">All status <svg width="14" height="14" viewBox="0 0 14 14"
+                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M6.38988 12.6801C6.20901 12.5767 6.05911 12.4268 5.95576 12.2459L0.966136 3.51411C0.646458 2.95467 0.840821 2.24201 1.40026 1.92233C1.57654 1.8216 1.77606 1.76861 1.97909 1.76861L11.9583 1.76861C12.6027 1.76861 13.125 2.29095 13.125 2.93528C13.125 3.13831 13.072 3.33783 12.9713 3.51411L7.98166 12.2459C7.66198 12.8054 6.94932 12.9997 6.38988 12.6801Z"
+                            fill="#59361B" />
+                    </svg>
+                </button>
+                <div class="main__button-status-option">
+                    <a href="">Available</a>
+                    <a href="">Borrow</a>
+                </div>
+            </div>
             <a href='#popup' class="main__button-add">
                 Add new book
             </a>
@@ -7288,6 +7301,53 @@
 
             </svg> duongkimnam2142002@gmail.com</span>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+
+        const tl1 = gsap.timeline({ default: { duration: 1, ease: 'power4.inOut' } })
+        const tl2 = gsap.timeline({ default: { duration: 1, ease: 'power4.inOut' } })
+
+        const mainButtonGenre = document.querySelector('.main__button-genre')
+        const mainButtonStatus = document.querySelector('.main__button-status')
+        const mainButtonGenreOption = document.querySelector('.main__button-genre-option')
+        const mainButtonStatusOption = document.querySelector('.main__button-status-option')
+
+        let mainButtonGenreOptionStatus = false
+        let mainButtonStatusOptionStatus = false
+        tl1.to(mainButtonGenreOption, {
+            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+            ease: 'power4.inOut',
+            duration: .2
+        })
+        tl1.pause()
+        mainButtonGenre.addEventListener('click', () => {
+            if (!mainButtonGenreOptionStatus) {
+                tl1.play()
+                mainButtonGenreOptionStatus = true
+            } else {
+                tl1.reverse()
+                mainButtonGenreOptionStatus = false
+            }
+        })
+
+        tl2.to(mainButtonStatusOption, {
+            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+            ease: 'power4.inOut',
+            duration: .2
+        })
+        tl2.pause()
+        mainButtonStatus.addEventListener('click', () => {
+            if (!mainButtonStatusOptionStatus) {
+                tl2.play()
+                mainButtonStatusOptionStatus = true
+            } else {
+                tl2.reverse()
+                mainButtonStatusOptionStatus = false
+            }
+        })
+    </script>
 </body>
 
 </html>
