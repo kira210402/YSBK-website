@@ -225,6 +225,24 @@ const addComment = async (req, res, next) => {
 //   };
 // };
 
+
+// authorize for other users (admin set privilege for moderators)
+// /users/set-privilege/:userId
+const setPrivilege = async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const foundUser = await User.findById(userId);
+
+    if (!foundUser) return res.status(404).json({ message: 'User not found!' });
+
+    await User.findByIdAndUpdate(userId, { role: req.body.role });
+
+    return res.status(204).send();
+  } catch (error) {
+    next(error);
+  };
+};
+
 export {
   getAll,
   getOne,
@@ -233,5 +251,6 @@ export {
   deleteUser,
   addReview,
   addComment,
+  setPrivilege,
 }
 
