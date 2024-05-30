@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", verifyToken, getAll);
 
 // filter activities by status
-router.get("/:status", verifyToken, getActivitiesByStatus);
+router.get("/status/:status", verifyToken, getActivitiesByStatus);
 
 router.get("/:id", verifyToken, getOne);
 

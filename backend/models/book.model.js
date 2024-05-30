@@ -50,7 +50,7 @@ const bookSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: "Review"
   }]
-});
+}, { timestamps: true });
 
 const Book = mongoose.model("Book", bookSchema);
 export default Book;
